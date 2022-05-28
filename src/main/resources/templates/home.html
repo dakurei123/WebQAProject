@@ -84,7 +84,7 @@
             <div class="main-form">
 
                 <div class="form-header">
-                    <h2>Bạn muốn hỏi về?</h2>
+                    <h2>You want to ask about?</h2>
                     <select name="category" id="category">
                         <th:block th:each="category : ${categories}">
                             <option th:value="${category.id}" th:text="${category.name}"></option>
@@ -92,7 +92,7 @@
                     </select>
                 </div>
                 <div class="form-header">
-                    <input type="text" placeholder="Nhập tiêu đề" maxlength="255" id="title" />
+                    <input type="text" placeholder="Enter title" maxlength="255" id="title" />
                 </div>
                 <div class="ql-toolbar">
                     <div id="ql-content"></div>

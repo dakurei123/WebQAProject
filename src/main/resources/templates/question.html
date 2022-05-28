@@ -207,7 +207,7 @@
                     }
 
                     if (xoa.hasAttribute('idr') == false && xoa.hasAttribute('ida') == false) {
-                        alert("Lỗi không xác định")
+                        alert("Unknow Error")
                     }
                 })
             }
@@ -300,7 +300,7 @@
                                     <p class="content-answer">${i.content}</p>
                                     <div class="content-answer ">
                                         <a class="like" ida="${i.id}">Like</a>
-                                        <a class="reply-answer hov">Trả lời</a>
+                                        <a class="reply-answer hov">Reply</a>
                                     </div>
                                     
                                 </div>
@@ -313,10 +313,10 @@
                     listAnswersContainer.insertAdjacentHTML('afterbegin', res);
                     addEventComment()
                     deleteComment()
-                    alert("Thêm câu trả lời thành công")
+                    alert("Success")
                 },
                 error: function(error) {
-                    alert("Lỗi không xác định");
+                    alert("Unknow Error");
                 }
             })
         }
@@ -347,7 +347,7 @@
                                 </div>
                                 <p class="content-answer">${rep.content}</p>
                                 <div class="content-answer ">
-                                    <a class="reply-reply hov">Trả lời</a>
+                                    <a class="reply-reply hov">Reply</a>
                                 </div>
                             </div>
                         </div>
@@ -356,10 +356,10 @@
                     listRepliesContainer.insertAdjacentHTML('beforeend', replyTemp);
                     addEventComment()
                     deleteComment()
-                    alert("Thêm câu trả lời thành công")
+                    alert("Success")
                 },
                 error: function(error) {
-                    alert("Lỗi không xác định");
+                    alert("Unknow Error");
                 }
             })
         }
@@ -373,7 +373,7 @@
         submitBtn.setAttribute("style", "margin-right: 16px;")
         textAreaNode.setAttribute('cols', '30')
         textAreaNode.setAttribute('rows', '1')
-        textAreaNode.setAttribute('placeholder', 'Trả lời')
+        textAreaNode.setAttribute('placeholder', 'Reply')
         textAreaNode.setAttribute("style", "height: auto;overflow-y:hidden;display:block;");
         commentBox.appendChild(textAreaNode)
         commentBox.appendChild(submitBtn)
@@ -496,7 +496,7 @@
                                             </div>
                                             <p class="content-answer">${rep.content}</p>
                                             <div class="content-answer ">
-                                                <a class="reply-reply hov">Trả lời</a>
+                                                <a class="reply-reply hov">Reply</a>
                                             </div>
                                         </div>
                                     </div>
@@ -529,7 +529,7 @@
                                         <p class="content-answer">${i.content}</p>
                                         <div class="content-answer ">
                                             <a class="like" ida="${i.id}">Like</a>
-                                            <a class="reply-answer hov">Trả lời</a>
+                                            <a class="reply-answer hov">Reply</a>
                                         </div>
                                         
                                     </div>

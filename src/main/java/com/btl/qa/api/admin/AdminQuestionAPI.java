@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.btl.qa.entity.Answer;
 import com.btl.qa.entity.Question;
 import com.btl.qa.repository.AnswerRepository;
+import com.btl.qa.repository.LikeRepository;
 import com.btl.qa.repository.QuestionRepository;
 import com.btl.qa.repository.ReplyRepository;
 
@@ -21,6 +22,8 @@ public class AdminQuestionAPI {
 	AnswerRepository answerRepository;
 	@Autowired
 	ReplyRepository replyRepository;
+	@Autowired
+	LikeRepository likeRepository;
 	
 	@DeleteMapping("/api/question/{questionId}")
 	public boolean deleteQuestion(@PathVariable Long questionId) {
@@ -29,6 +32,7 @@ public class AdminQuestionAPI {
 			List<Answer> answers = (List<Answer>) question.getAnswers();
 			for (Answer answer : answers) {
 				replyRepository.delete(answer.getReplies());
+				likeRepository.delete(answer.getLikes());
 			}
 			answerRepository.delete(answers);
 			questionRepository.delete(question);

@@ -82,6 +82,7 @@ public class AnswerService implements IAnswerService {
 			return false;
 		if (answer.getUser().getId() == idUser || idUser == 1) {
 			replyRepository.delete(answer.getReplies());
+			likeRepository.delete(answer.getLikes());
 			answerRepository.delete(answer);
 			return true;
 		}

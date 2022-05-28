@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" th:href="@{/assets/stylesheet/signup.css}" href="/assets/stylesheet/signup.css" />
-    <title>Đăng nhập</title>
+    <title>Login</title>
 </head>
 
 <body>
     <div class="signup">
-	
+
         <th:block th:if="${err} != null">
             <h2 class="err" th:utext="${err}"></h2>
         </th:block>
