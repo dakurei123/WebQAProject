@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/assets/stylesheet/signup.css}" href="/assets/stylesheet/signup.css" />
+    <title>Đăng nhập</title>
+</head>
+
+<body>
+    <div class="signup">
+	
+        <th:block th:if="${err} != null">
+            <h2 class="err" th:utext="${err}"></h2>
+        </th:block>
+        <th:block th:if="${success} != null">
+            <h2 class="success" th:utext="${success}"></h2>
+        </th:block>
+        <h1 class="title" style="font-weight: 750; color: rgb(72, 197, 222); font-size: 44px">NHÓM 21</h1>
+        <div class="box">
+            <div class="container">
+                <div class="header">
+                    <h1>Login</h1>
+                </div>
+                <div class="main">
+                    <form action="/j_spring_security_check" id="signupForm" method="post">
+                        <input type="text" name="username" placeholder="Username" />
+                        <input type="password" name="password" placeholder="Password" />
+                        <input class="submit" type="submit" value="Login" />
+                    </form>
+                    <p>You dont have an account? <a href="/signup" style="text-decoration: none"> Sign Up</a> </p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

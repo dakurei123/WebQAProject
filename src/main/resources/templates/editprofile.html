@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/stylesheet/signup.css" />
+    <script language="javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <title>Edit Profile</title>
+</head>
+
+<body>
+    <div class="signup">
+        <h1 class="title" style="font-weight: 750; color: rgb(72, 197, 222); font-size: 44px">NHÓM 21
+        </h1>
+        <div class="box">
+            <div class="container">
+
+                <div class="main">
+                    <form method="post" action="/editprofile" enctype="multipart/form-data" th:object="${UserDTO}">
+                        <div class="header">
+                            <img id="more-js" th:src="@{${UserDTO.avatar}}" alt="" class="avatar" width="160px" height="160px" />
+                            <input id="file-upload" type="file" accept="image/*" name="image" />
+                        </div>
+
+                        <span th:utext="${fullNameerr}" style="text-align: left;color: red;"></span>
+                        <span style="text-align: left; font-size: 12px;">Họ và tên:</span>
+                        <input th:field="*{fullName}" type="text" name="fullName" placeholder="Full name" required="required" />
+
+                        <span th:utext="${passworderr}" style="text-align: left;color: red;"></span>
+                        <span style="text-align: left; font-size: 12px;">Mật khẩu:</span>
+                        <input th:field="*{password}" type="password" name="password" placeholder="Password" required="required" />
+
+                        <input type="submit" value="Done" id="submitBtn" class="submit" />
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var fileurl = e.target.result;
+                    $('#more-js').attr('src', fileurl);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#file-upload").on('change', function() {
+            readURL(this)
+        });
+        $("#more-js").on('click', function() {
+            $("#file-upload").click()
+        });
+        //]]>
+    </script>
+
+</body>
+
+</html>

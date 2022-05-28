@@ -1,0 +1,311 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome</title>
+    <script language="javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <style>
+        html {
+            background-color: #f1f2f3;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        a,
+        button,
+        p {
+            text-decoration: none;
+            font-size: 24px;
+            display: inline-block;
+            background-color: #48c5de;
+            margin: 12px 20px 12px 12px;
+            padding: 12px;
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .btn {
+            font-size: 16px;
+            margin: 0;
+            padding: 8px;
+        }
+        
+        button {
+            cursor: pointer;
+        }
+        
+        .btn2 {
+            cursor: auto;
+            min-width: 141.35px;
+        }
+        
+        .btn3 {
+            cursor: auto;
+            min-width: 48px;
+        }
+        
+        .red {
+            color: #D8000C;
+            background-color: #FFBABA;
+        }
+        
+        .green {
+            color: #270;
+            background-color: #DFF2BF;
+        }
+        
+        a:hover,
+        button:hover {
+            opacity: .6;
+        }
+        
+        .btn2:hover,
+        .btn3:hover {
+            opacity: 1;
+        }
+        
+        p {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+            margin: 0 12px 0 0;
+        }
+        
+        input {
+            padding: 12px;
+            font-size: 20px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+        
+        h1,
+        #result {
+            margin: 12px;
+        }
+        
+        tr,
+        td,
+        th {
+            padding: 8px;
+            border-bottom: solid 1px #ccc;
+            text-align: center;
+        }
+        
+        th {
+            text-align: center;
+        }
+        
+        .avatar {
+            border-radius: 50%;
+            padding: 0;
+        }
+        
+        .ban {
+            min-width: 68px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ADMIN PAGE:</h1>
+
+    <a href="http://localhost:8081">GO TO HOME PAGE</a>
+    <a id="category" href="#">Category manager</a>
+    <a id="user" href="#">User manager</a>
+
+    <div id="result"> </div>
+
+    <script>
+        //<![CDATA[ 
+        $(document).ready(function() {
+            category = document.querySelector('#category')
+            user = document.querySelector('#user')
+            report = document.querySelector('#report')
+            result = document.querySelector('#result')
+
+            category.addEventListener('click', function Category() {
+
+                function addCategory(id, name) {
+                    var data = {}
+                    if (id === 'ID')
+                        id = null
+                    data['id'] = id
+                    data['name'] = name
+
+                    $.ajax({
+                        url: 'http://localhost:8081/admin/api/category',
+                        type: 'post',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        dataType: 'json',
+                        success: function(result) {
+                            Category()
+                            alert("Success")
+                        },
+                        error: function(error) {
+
+                        }
+                    })
+                }
+
+                function loadCategory() {
+                    result.innerHTML = ""
+                    var res = `
+                    <div class = "item">
+                        <button class = "id btn3">ID</button>
+                        <input type="text" placeholder="Add new category" class="name"/>
+                        <button class="btn2">Questions</button>
+                        <button class="edit">Add</button> </br>
+                    </div>
+                    `
+                    $.get("http://localhost:8081/admin/api/category", function(categories) {
+                        for (var category of categories) {
+                            res += ` 
+                        <div class = "item">
+                            <button class = "id btn3">${category.id}</button>
+                            <input type="text" value="${category.name}" class="name"/>
+                            <button class="btn2">${category.questions}</button>
+                            <button class="edit">Edit</button></br>
+                        </div>
+                    `
+                        }
+                        result.innerHTML = res
+                        var editCategory = document.querySelectorAll('.edit')
+                        for (const edit of editCategory) {
+                            edit.addEventListener('click', function() {
+                                var item = edit.parentElement;
+                                var id = item.querySelector('.id').innerHTML
+                                var name = item.querySelector('.name').value
+                                addCategory(id, name)
+                            })
+                        }
+                    });
+                }
+
+                loadCategory()
+            })
+
+            user.addEventListener('click', function() {
+                result.innerHTML = ""
+
+                function loadUsers() {
+                    $.get("http://localhost:8081/admin/api/users", function(users) {
+                        var res = `
+                            <table>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Avatar</th>
+                                    <th>Username</th>
+                                    <th>Fullname</th>
+                                    <th>Role</th>
+                                    <th>Questions</th>
+                                    <th>Answers</th>
+                                    <th>Like</th>
+                                    <th>Change Role</th>
+                                    <th>Action</th>
+                                </tr>
+                                `
+                        for (var user of users) {
+                            if (user.status == 1) {
+                                res += '<tr>'
+                            } else {
+                                res += '<tr class = "red">'
+                            }
+                            res += ` 
+                                    <td class="id">${user.id}</td>
+                                    <td><img src="http://localhost:8081/${user.avatar}" alt="" class="avatar" width="40px" height="40px" /></td>
+                                    <td>${user.username}</td>
+                                    <td>${user.fullName}</td>
+                                    <td class = "user-role">${user.role}</td>
+                                    <td>${user.questions}</td>
+                                    <td>${user.answers}</td>
+                                    <td>${user.like}</td>`
+                            if (user.id != 1) {
+                                if (user.status == 1) {
+                                    res += `
+                                    <td><button class="btn role">Change</button></td>
+                                    <td><button class="btn red ban">Ban</button></td>
+                                </tr>   
+                                `
+                                } else {
+                                    res += `
+                                    <td><button class="btn role">Change</button></td>
+                                    <td><button class="btn green ban">Unban</button></td>
+                                </tr>   
+                                `
+                                }
+                            } else {
+                                res += '<td><td></tr> '
+                            }
+
+                        }
+                        res += "</table>"
+                        result.innerHTML = res
+
+                        const bans = document.querySelectorAll('.ban')
+                        const roles = document.querySelectorAll('.role')
+
+                        for (const ban of bans) {
+                            ban.addEventListener('click', function() {
+                                var main = ban.closest('tr')
+                                var id = main.querySelector('.id').innerHTML
+                                $.ajax({
+                                    url: 'http://localhost:8081/admin/api/user/lock/' + id,
+                                    type: 'put',
+                                    success: function(result) {
+                                        if (result == 1) {
+                                            ban.innerHTML = 'Ban'
+                                            ban.className = 'btn red ban'
+                                            main.className = ''
+                                        } else {
+                                            ban.innerHTML = 'Unban'
+                                            ban.classList = 'btn green ban'
+                                            main.className = 'red'
+                                        }
+
+                                        alert("Success")
+                                    },
+                                    error: function(error) {
+                                        alert("Error")
+                                    }
+                                })
+                            })
+
+                        }
+
+                        for (const role of roles) {
+                            role.addEventListener('click', function() {
+                                var main = role.closest('tr')
+                                var id = main.querySelector('.id').innerHTML
+                                $.ajax({
+                                    url: 'http://localhost:8081/admin/api/user/role/' + id,
+                                    type: 'put',
+                                    success: function(result) {
+                                        main.querySelector('.user-role').innerHTML = result
+                                        alert("Success")
+                                    },
+                                    error: function(error) {
+                                        alert("Error")
+                                    }
+                                })
+                            })
+
+                        }
+                    })
+                }
+
+                loadUsers()
+            })
+
+        })
+
+        //]]>
+    </script>
+
+</body>
+
+</html>

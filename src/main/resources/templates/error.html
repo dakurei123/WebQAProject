@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Success </title>
+</head>
+
+<body>
+	<input type="hidden" th:value = "${code}" id = "code"/>
+	<input type="hidden" th:value = "${message}" id = "message"/>
+    <script type="text/javascript">
+        //<![CDATA[
+        var code  = document.querySelector('#code').value
+        var message = document.querySelector('#message').value
+        alert("Error: " + code + ": " + message);
+        window.location="/";
+        //]]>
+    </script>
+</body>
+
+</html>

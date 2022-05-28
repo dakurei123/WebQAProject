@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/assets/stylesheet/signup.css}" href="/assets/stylesheet/signup.css" />
+    <script language="javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <title>Đăng ký</title>
+</head>
+
+<body>
+    <div class="signup">
+        <h1 class="title" style="font-weight: 750; color: rgb(72, 197, 222); font-size: 44px">NHÓM 21
+        </h1>
+        <div class="box">
+            <div class="container">
+                <div class="header">
+                    <h1>Create a new account</h1>
+                    <p>It's quick and easy.</p>
+                </div>
+                <div class="main">
+                    <form th:action="@{/signup}" th:object="${UserDTO}" method="post">
+                        <span th:utext="${fullNameerr}" style="text-align: left;color: red;"></span>
+                        <input th:field="*{fullName}" type="text" name="fullName" placeholder="Fullname" required="required" />
+                        <span th:utext="${usernameerr}" style="text-align: left;color: red;"></span>
+                        <input th:field="*{username}" type="text" name="username" placeholder="Username" required="required" />
+                        <span th:utext="${passworderr}" style="text-align: left;color: red;"></span>
+                        <input th:field="*{password}" type="password" name="password" placeholder="Password" required="required" />
+                        <input type="submit" value="Sign Up" id="submitBtn" class="submit" />
+                    </form>
+                    <a href="/login">Already have an account?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

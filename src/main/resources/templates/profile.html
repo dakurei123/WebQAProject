@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/assets/stylesheet/home.css}" href="../static/assets/stylesheet/home.css" />
+    <link rel="stylesheet" th:href="@{/assets/stylesheet/profile.css}" href="../static/assets/stylesheet/profile.css" />
+    <link rel="stylesheet" th:href="@{/assets/font/themify-icons/themify-icons.css}" href="/assets/font/themify-icons/themify-icons.css" />
+    <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <title>Profile</title>
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <div class="navbar">
+                <div class="nav-left">
+                    <a href="/">
+                        <strong>NHÓM 21</strong>
+                    </a>
+                    <a href="/"><i class="ti-home"></i></a>
+                    <a href="http://localhost:8081/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
+                </div>
+                <div class="nav-right">
+                    <div class="form">
+                        <input type="search" placeholder="Search" class="search" />
+                        <button class="search-btn"><i class="ti-search"></i></button>
+                    </div>
+                    <a style="display:flex;" th:href="@{'~/profile/'+${#authentication.getPrincipal().getId()}}" sec:authorize="isAuthenticated()">
+                        <img style="margin-right: 8px" th:src="@{'~/'+${#authentication.getPrincipal().getAvatar()}}" alt="" class="avatar" width="35px" height="35px" />
+                        <span th:text="${#authentication.getPrincipal().getFullName()}"></span>
+                    </a>
+                    <a id="logout" href="/logout" sec:authorize="isAuthenticated()">
+					  	Logout
+					</a>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <section class="main">
+        <div class="container">
+            <div class="category">
+                <ul>
+                    <h1>Category</h1>
+                    <li><a href="">All</a></li>
+                    <th:block th:each="category : ${categories}">
+                        <li><a th:value="${category.id}" th:text="${category.name}" style="cursor: pointer;" class="get-category-js">Technology</a></li>
+                    </th:block>
+                </ul>
+            </div>
+
+            <div class="news">
+                <div class="user-profile">
+                    <div class="profile">
+                        <img id="more-js" th:src="@{'~/'+${user.avatar}}" alt="" class="avatar" width="160px" height="160px" />
+                        <strong th:utext="${user.fullName}"></strong>
+                        <th:block th:if="${#authentication.getPrincipal().getUsername()} == ${user.username}">
+                            <form th:action="@{/editprofile}">
+                                <input type="submit" value="Edit profile" />
+                            </form>
+                        </th:block>
+                        <th:block th:unless="${#authentication.getPrincipal().getUsername()} == ${user.username}">
+                            <input type="submit" value="Unfollow" class="follow" />
+                        </th:block>
+                    </div>
+
+                    <div class="profile">
+                        <strong style="color: rgb(72, 197, 222)">Activity:</strong>
+                        <table>
+                            <tr>
+                                <td style=" font-size: 24px; padding: 8px">Number of Questions: </td>
+                                <td style="color: rgb(72, 197, 222); font-size: 24px; padding: 8px" id="nQs"> </td>
+                            </tr>
+                            <tr>
+                                <td style=" font-size: 24px; padding: 8px">Number of Answers: </td>
+                                <td style="color: rgb(72, 197, 222); font-size: 24px; padding: 8px" id="nAs"> </td>
+                            </tr>
+                            <tr>
+                                <td style=" font-size: 24px; padding: 8px">Number of Likes: </td>
+                                <td style="color: rgb(72, 197, 222); font-size: 24px; padding: 8px" id="nLs"> </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="news-container">
+
+                </div>
+            </div>
+
+            <div class="follows">
+                <ul>
+                    <h1>Followed</h1>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+
+    </footer>
+    <script th:src="@{/assets/scrips/ConvertMonth.js}" src="../static/assets/scrips/ConvertMonth.js"></script>
+    <script th:src="@{/assets/scrips/GetQuestions.js}" src="../static/assets/scrips/GetQuestions.js"></script>
+    <script th:src="@{/assets/scrips/Follow.js}" src="../static/assets/scrips/Follow.js"></script>
+    <script>
+        //<![CDATA[ 
+        $('document').ready(function() {
+            const tmp = location.href.split("\/");
+            const userId = tmp[tmp['length'] - 1];
+            $.get("http://localhost:8081/api/user/info/" + userId, function(result) {
+                document.querySelector('#nQs').innerHTML = result.numberQuestions
+                document.querySelector('#nAs').innerHTML = result.numberAnswers
+                document.querySelector('#nLs').innerHTML = result.like
+            });
+
+            //Get Question By User
+            const urlGetQuestionByUser = 'http://localhost:8081/api/user/question/' + userId
+            getQuestions(urlGetQuestionByUser)
+
+            //Get Question By User And Category
+            const getQuestionsByCategories = document.querySelectorAll('.get-category-js')
+            for (const getQuestionsByCategory of getQuestionsByCategories) {
+                getQuestionsByCategory.addEventListener('click', function() {
+                    var categoryId = getQuestionsByCategory.getAttribute('value');
+                    getQuestions('http://localhost:8081/api/user/question/category?userId=' + userId + '&categoryId=' + categoryId)
+                })
+            }
+
+            //Get Question By User And Search
+            const search = document.querySelector('.search')
+
+            search.addEventListener('keypress', function(event) {
+                if (event.which == 13) {
+                    getQuestions('http://localhost:8081/api/user/question/search/?userId=' + userId + '&key=' + search.value)
+
+                    event.preventDefault();
+                }
+            })
+
+            const tiSearch = document.querySelector('.search-btn')
+            tiSearch.addEventListener('click', function searchQuestion() {
+                getQuestions('http://localhost:8081/api/user/question/search/?userId=' + userId + '&key=' + search.value)
+                event.preventDefault();
+            })
+
+            //Get follow
+            getFollow()
+
+
+            const isFollow = document.querySelector('.follow')
+            if (isFollow != null) {
+                //Check follow
+                function checkFollow() {
+                    $.get("/api/user/follow/" + userId, function(result) {
+                        if (result == true) {
+                            isFollow.value = 'Unfollow'
+                            isFollow.style = 'color: #D8000C;min-width: 110.5px;background-color: #FFBABA'
+                        } else {
+                            isFollow.value = 'Follow'
+                            isFollow.style = 'min-width: 110.5px'
+                        }
+                    })
+                }
+
+                //Follow/Unfollow (Follow Action)
+                isFollow.addEventListener('click', function() {
+                    $.ajax({
+                        url: '/api/user/follow/' + userId,
+                        type: 'post',
+                        success: function(result) {
+                            alert('Success!')
+                            checkFollow()
+                            getFollow()
+                        },
+                        error: function(error) {
+                            alert(error.responseText)
+                            window.location = "/login";
+                        }
+                    })
+                })
+                checkFollow()
+            }
+
+        });
+        //]]>
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/assets/stylesheet/home.css}" href="../static/assets/stylesheet/home.css" />
+    <link rel="stylesheet" th:href="@{/assets/font/themify-icons/themify-icons.css}" href="../static/assets/font/themify-icons/themify-icons.css" />
+    <script src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <title>Question</title>
+</head>
+
+<body>
+    <header>
+        <div class="header">
+            <div class="navbar">
+                <div class="nav-left">
+                    <a href="/">
+                        <strong>NHÓM 21</strong>
+                    </a>
+                    <a href="/"><i class="ti-home"></i></a>
+                    <a href="http://localhost:8081/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
+                </div>
+                <div class="nav-right">
+                    <div class="form" style="display: none;">
+                        <input type="search" placeholder="Search" class="search" />
+                        <button class="search-btn"><i class="ti-search"></i></button>
+                    </div>
+                    <a style="display:flex;" th:href="@{'~/profile/'+${#authentication.getPrincipal().getId()}}" sec:authorize="isAuthenticated()">
+                        <img style="margin-right: 8px" th:src="@{'~/'+${#authentication.getPrincipal().getAvatar()}}" alt="" class="avatar" width="35px" height="35px" />
+                        <span th:text="${#authentication.getPrincipal().getFullName()}"></span>
+                    </a>
+                    <a id="logout" href="/logout" sec:authorize="isAuthenticated()">
+					  	Logout
+					</a>
+                    <a href="/login" sec:authorize="isAnonymous()">Login</a>
+                    <a href="/signup" sec:authorize="isAnonymous()">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <section class="main">
+        <div class="container">
+            <div class="category">
+                <ul>
+
+                </ul>
+            </div>
+
+            <div class="news">
+                <div class="item" style="position: relative">
+                    <button class="red deleteQuestionBtn" sec:authorize="hasRole('ADMIN')">X</button>
+                    <div class="user">
+                        <a href="#">
+                            <img th:src="@{'~/'+${question.avatarLink}}" alt="" class="avatar" width="40px" height="40px" />
+                        </a>
+                        <div class="modify">
+                            <strong><a class="modifiedby" href="#" th:text="${question.fullName}"></a></strong>
+                            <p class="modifieddate" th:text="${question.createdDate}"></p>
+                        </div>
+                    </div>
+
+                    <div class="new">
+                        <div class="category-new" th:text="${question.categoryName}"></div>
+                        <h1 class="title">
+                            <a th:text="${question.title}"></a>
+                        </h1>
+                        <div class="content" th:utext="${question.content}"></div>
+                    </div>
+                    <div class="comment">
+                        <div>
+                            <i class="ti-comment"></i>
+                            <!-- <i class="fa-regular fa-message"></i> -->
+                            <span>Answers:</span>
+                        </div>
+                    </div>
+
+                    <div class="form-answer">
+                        <a href="#">
+                            <img th:src="@{'~/'+${#authentication.getPrincipal().getAvatar()}}" alt="" class="avatar" width="36px" height="36px" />
+                        </a>
+                        <textarea class="answer-content answerArea" placeholder="You have a answer? ...." style="margin-top: 0;"></textarea>
+                        <i class="ti-control-play"></i>
+                    </div>
+
+                    <div class="answers">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="follows">
+
+                <ul>
+                    <h1>Followed</h1>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="footer ">
+
+    </footer>
+    <script th:src="@{/assets/scrips/ConvertMonth.js}" src="../static/assets/scrips/ConvertMonth.js"></script>
+    <script th:src="@{/assets/scrips/Follow.js}" src="../static/assets/scrips/Follow.js"></script>
+    <script>
+        //<![CDATA[ 
+
+        //Get QuestionID:
+        const tmp = location.href.split("\/");
+        const questionId = tmp[tmp['length'] - 1];
+
+        // Get UserID:
+        $.get("http://localhost:8081/user", function(result) {
+            const userId1 = result.id
+            const userRole1 = result.role
+
+            //Delete Question
+            if (userRole1 == 'ROLE_ADMIN') {
+                var deleteQuestionBtn = document.querySelector('.deleteQuestionBtn')
+
+                deleteQuestionBtn.addEventListener('click', function(event) {
+                    event.stopImmediatePropagation()
+                    event.stopPropagation()
+                    if (confirm('Are you sure you want delete this question?')) {
+                        $.ajax({
+                            url: 'http://localhost:8081/api/question/' + questionId,
+                            type: 'delete',
+                            success: function(result) {
+                                if (result == true) {
+                                    alert('Deleted')
+                                    location.href = 'http://localhost:8081';
+                                } else {
+                                    alert('Delete error')
+                                    location.href = 'http://localhost:8081';
+                                }
+                            },
+                            error: function(error) {
+                                alert('Delete error')
+                                location.href = 'http://localhost:8081';
+                            }
+                        })
+                    }
+                })
+
+            }
+        });
+
+        // Sửa/ Xoá button
+        function deleteComment() {
+            var xoas = document.querySelectorAll('.xoa')
+            for (const xoa of xoas) {
+                xoa.addEventListener('click', function(event) {
+                    event.stopImmediatePropagation()
+                    event.stopPropagation()
+                    if (xoa.hasAttribute('ida')) {
+                        if (confirm('Are you sure you want delete this answer?')) {
+                            var ida = xoa.getAttribute('ida')
+                            $.ajax({
+                                url: 'http://localhost:8081/api/answer/' + ida,
+                                type: 'delete',
+                                success: function(result) {
+                                    if (result == true) {
+                                        var elementDelete = xoa.closest('.answer')
+                                        elementDelete.remove()
+                                        alert('Deleted')
+                                    } else {
+                                        alert('Delete error')
+                                        location.reload()
+                                    }
+                                },
+                                error: function(error) {
+                                    alert('Delete error')
+                                    location.reload()
+                                }
+                            })
+
+                        }
+                    }
+
+                    if (xoa.hasAttribute('idr')) {
+                        if (confirm('Are you sure you want delete this reply?')) {
+                            var idr = xoa.getAttribute('idr')
+                            $.ajax({
+                                url: 'http://localhost:8081/api/reply/' + idr,
+                                type: 'delete',
+                                success: function(result) {
+                                    if (result == true) {
+                                        var elementDelete = xoa.closest('.reply')
+                                        elementDelete.remove()
+                                        alert('Deleted')
+                                    } else {
+                                        alert('Delete error')
+                                        location.reload()
+                                    }
+                                },
+                                error: function(error) {
+                                    alert('Delete error')
+                                    location.reload()
+                                }
+                            })
+                        }
+                    }
+
+                    if (xoa.hasAttribute('idr') == false && xoa.hasAttribute('ida') == false) {
+                        alert("Lỗi không xác định")
+                    }
+                })
+            }
+        }
+
+        // List Answer
+        const listAnswersContainer = document.querySelector('.answers')
+
+        //Config text area__________________________________________________________________________________________________________
+        //TextArea cho Answer
+        const textArea = document.querySelector('.answerArea')
+
+        function totalLike(like, answerId) {
+            $.get('http://localhost:8081/api/answer/like/' + answerId, function(result) {
+                like.innerHTML = result + ' Like'
+            })
+        }
+
+        function addEventComment() {
+            var answers = document.querySelectorAll('.reply-answer')
+            var replies = document.querySelectorAll('.reply-reply')
+            var likes = document.querySelectorAll('.like')
+
+            for (const answer of answers) {
+                answer.addEventListener('click', function() {
+                    answer.parentElement.appendChild(commentBox)
+                    textAreaNode.value = ''
+                })
+            }
+
+            for (const reply of replies) {
+                reply.addEventListener('click', function() {
+                    reply.parentElement.appendChild(commentBox)
+                    textAreaNode.value = ''
+                })
+            }
+
+            for (const like of likes) {
+                const answerId = like.getAttribute('ida')
+
+                totalLike(like, answerId)
+
+                $.get('http://localhost:8081/api/like/' + answerId, function(result) {
+                    if (result == true)
+                        like.style = 'color:blue;'
+                    else
+                        like.style = ''
+                })
+
+                like.addEventListener('click', function() {
+                    $.post('http://localhost:8081/api/like/' + answerId, function(result) {
+                        if (result == true)
+                            like.style = 'color:blue;'
+                        else
+                            like.style = ''
+                        totalLike(like, answerId)
+                    })
+                })
+
+
+
+            }
+
+        }
+        // Post comment API 
+        function postAnswer(data) {
+            $.ajax({
+                url: 'http://localhost:8081/api/answer',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function(i) {
+                    var date = new Date(i.createdDate);
+                    date = convertMonth(date.getMonth()) + " " + date.getDate() + " " + date.getHours() + ":" + date.getMinutes()
+                    var res = `
+                        <div class="answer">
+                            <div class="user">
+                                <a href="http://localhost:8081/profile/${i.userId}"> 
+                                    <img src="http://localhost:8081/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
+                                </a>
+                                <div class="container-answer" ida="${i.id}">
+                                    <div class="modify">
+                                        <strong><a class="modifiedby" href="http://localhost:8081/profile/${i.userId}">${i.fullName}</a></strong>
+                                        <p class="modifieddate">${date}</p>
+                                        <div>
+                                            <div class="xoa" ida="${i.id}">Xoá</div>
+                                        </div>
+                                    </div>
+                                    <p class="content-answer">${i.content}</p>
+                                    <div class="content-answer ">
+                                        <a class="like" ida="${i.id}">Like</a>
+                                        <a class="reply-answer hov">Trả lời</a>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="replies ">
+
+                            </div>
+                        </div>
+                    `
+                    listAnswersContainer.insertAdjacentHTML('afterbegin', res);
+                    addEventComment()
+                    deleteComment()
+                    alert("Thêm câu trả lời thành công")
+                },
+                error: function(error) {
+                    alert("Lỗi không xác định");
+                }
+            })
+        }
+
+        function postReply(data, listRepliesContainer) {
+            $.ajax({
+                url: 'http://localhost:8081/api/reply',
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                success: function(rep) {
+                    var dateRep = new Date(rep.createdDate);
+                    dateRep = convertMonth(dateRep.getMonth()) + " " + dateRep.getDate() + " " + dateRep.getHours() + ":" + dateRep.getMinutes()
+                    var replyTemp = `
+                    <div class="reply">
+                        <div class="user">
+                            <a href="http://localhost:8081/profile/${rep.userId}"> 
+                                <img src="http://localhost:8081/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
+                            </a>
+                            <div class="container-answer" ida="${rep.answerId}">
+                                <div class="modify">
+                                    <strong><a class="modifiedby" href="http://localhost:8081/profile/${rep.userId}">${rep.fullName}</a></strong>
+                                    <p class="modifieddate ">${dateRep}</p>
+                                    <div>
+                                        <div class="xoa" idr="${rep.id}">Xoá</div>
+                                    </div>
+                                </div>
+                                <p class="content-answer">${rep.content}</p>
+                                <div class="content-answer ">
+                                    <a class="reply-reply hov">Trả lời</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                    listRepliesContainer.insertAdjacentHTML('beforeend', replyTemp);
+                    addEventComment()
+                    deleteComment()
+                    alert("Thêm câu trả lời thành công")
+                },
+                error: function(error) {
+                    alert("Lỗi không xác định");
+                }
+            })
+        }
+
+        //Tạo textArea cho Reply
+        const textAreaNode = document.createElement('textarea')
+        const submitBtn = document.createElement('i')
+        const commentBox = document.createElement('div')
+        commentBox.setAttribute("style", "position: relative;")
+        submitBtn.className = "ti-control-play"
+        submitBtn.setAttribute("style", "margin-right: 16px;")
+        textAreaNode.setAttribute('cols', '30')
+        textAreaNode.setAttribute('rows', '1')
+        textAreaNode.setAttribute('placeholder', 'Trả lời')
+        textAreaNode.setAttribute("style", "height: auto;overflow-y:hidden;display:block;");
+        commentBox.appendChild(textAreaNode)
+        commentBox.appendChild(submitBtn)
+
+        // Config for textArea & textAreaNode
+        function configTextArea() {
+
+            const heightDefault = textAreaNode.scrollHeight
+            textArea.addEventListener("input", function() {
+                this.style.height = "auto";
+                this.style.height = (this.scrollHeight) + "px";
+            })
+            textAreaNode.addEventListener("input", function() {
+                this.style.height = "auto";
+                this.style.height = (this.scrollHeight) + "px";
+            })
+            textArea.addEventListener('click', function(event) {
+                event.stopPropagation();
+            })
+            textAreaNode.addEventListener('click', function(event) {
+                event.stopPropagation();
+            })
+
+            //API for Textarea
+            textAreaNode.addEventListener('keypress', function(event) {
+                if (event.which == 13 && !event.shiftKey) {
+
+                    // Lấy ID Answer, gán giá trị vào data
+                    var answerId = this.parentElement.parentElement.parentElement.getAttribute('ida')
+                    var listRepliesContainer = this.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+                    if (listRepliesContainer.className != "replies ") {
+                        listRepliesContainer = this.parentElement.parentElement.parentElement.parentElement.parentElement.lastElementChild
+                    }
+                    var data = {}
+                    data['answerId'] = answerId
+                    data['content'] = this.value.replace(new RegExp('\r?\n', 'g'), '<br/>')
+
+                    //CALL API
+                    postReply(data, listRepliesContainer)
+
+                    // Reset textarea
+                    textAreaNode.value = '';
+                    this.style.height = "auto";
+
+                    // Ngăn chặn hành vi mặc định là xuống dòng
+                    // Đè shift thì vẫn xuống dòng
+                    event.preventDefault();
+
+                }
+            })
+
+            textArea.addEventListener('keypress', function(event) {
+                if (event.which == 13 && !event.shiftKey) {
+
+                    // Gán giá trị vào data
+                    var data = {}
+                    data['questionId'] = questionId
+                    data['content'] = textArea.value.replace(new RegExp('\r?\n', 'g'), '<br/>')
+
+                    //CALL API
+                    postAnswer(data)
+
+                    // Reset textarea
+                    textArea.value = '';
+                    this.style.height = "auto";
+
+                    // Ngăn chặn hành vi mặc định là xuống dòng
+                    // Đè shift thì vẫn xuống dòng
+                    event.preventDefault();
+
+                }
+            })
+        }
+
+        //Config text area DONE___________________________________________________________________________________________________________   
+
+        $(document).ready(function() {
+            // Chưa có POST Answer
+            $.get("http://localhost:8081/user", function(thisUser) {
+                const userId = thisUser.id
+                const userRole = thisUser.role
+
+                //Get Answers & Replies
+                function getAnswer() {
+
+                    //Call API
+                    $.ajax({
+                        url: 'http://localhost:8081/api/answer/' + questionId,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(result) {
+
+                            //Lấy list Answer
+                            for (var i of result) {
+                                //Lấy list Reply trong Answer
+                                var repliesTemp = ''
+                                for (var rep of i.replies) {
+                                    var dateRep = new Date(rep.createdDate);
+                                    dateRep = convertMonth(dateRep.getMonth()) + " " + dateRep.getDate() + " " + dateRep.getHours() + ":" + dateRep.getMinutes()
+                                    var replyTemp = `
+                                <div class="reply">
+                                    <div class="user">
+                                        <a href="http://localhost:8081/profile/${rep.userId}"> 
+                                            <img src="http://localhost:8081/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
+                                        </a>
+                                        <div class="container-answer" ida="${i.id}">
+                                            <div class="modify" >
+                                                <strong><a class="modifiedby" href="http://localhost:8081/profile/${rep.userId}">${rep.fullName}</a></strong>
+                                                <p class="modifieddate ">${dateRep}</p> 
+                                `
+                                    if (userId == rep.userId || userRole == 'ROLE_ADMIN') {
+                                        replyTemp += `
+                                    <div>
+                                        
+                                        <div class="xoa" idr="${rep.id}">Xoá</div>
+                                    </div>
+                                    `
+                                    }
+                                    replyTemp += `
+                                            </div>
+                                            <p class="content-answer">${rep.content}</p>
+                                            <div class="content-answer ">
+                                                <a class="reply-reply hov">Trả lời</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `
+                                    repliesTemp += replyTemp
+                                }
+                                var date = new Date(i.createdDate);
+                                date = convertMonth(date.getMonth()) + " " + date.getDate() + " " + date.getHours() + ":" + date.getMinutes()
+                                var res = `
+                            <div class="answer">
+                                <div class="user">
+                                    <a href="http://localhost:8081/profile/${i.userId}"> 
+                                        <img src="http://localhost:8081/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
+                                    </a>
+                                    <div class="container-answer" ida="${i.id}">
+                                        <div class="modify">
+                                            <strong><a class="modifiedby" href="http://localhost:8081/profile/${i.userId}">${i.fullName}</a></strong>
+                                            <p class="modifieddate">${date}</p>
+                                            `
+                                if (userId == i.userId || userRole == 'ROLE_ADMIN') {
+                                    res += `
+                                    <div>
+                                        <div class="xoa" ida="${i.id}">Xoá</div>
+                                    </div>
+                                    `
+                                }
+                                res += `
+                                        </div>
+                                        <p class="content-answer">${i.content}</p>
+                                        <div class="content-answer ">
+                                            <a class="like" ida="${i.id}">Like</a>
+                                            <a class="reply-answer hov">Trả lời</a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="replies ">
+                                    ${repliesTemp}
+                                </div>
+                            </div>
+                            `
+
+                                //Mỗi lần lấy xong thì cho xuống cuối cùng Answers
+                                listAnswersContainer.insertAdjacentHTML('beforeend', res);
+                            }
+                            addEventComment()
+                            configTextArea()
+                            deleteComment()
+
+                        }
+                    });
+
+                }
+                getAnswer()
+                getFollow()
+            });
+        })
+
+        //]]>
+    </script>
+</body>
+
+</html>
