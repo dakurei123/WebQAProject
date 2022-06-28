@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "uzer")
 public class User extends BaseEntity {
 	@Column
 	private String username;
