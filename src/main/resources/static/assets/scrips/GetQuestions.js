@@ -1,6 +1,6 @@
 var userId
 var userRole
-$.get("http://localhost:8081/user", function(result) {
+$.get("https://hungdeptraino1.herokuapp.com/user", function(result) {
     userId = result.id
     userRole = result.role
 });
@@ -25,11 +25,11 @@ function getQuestions(url, page, key) {
                 }
                 res += `
                         <div class="user"> 
-                            <a href="http://localhost:8081/profile/${i.user_id}"> 
-                                <img src="http://localhost:8081/${i.avatarLink}" alt="" class="avatar" width="40px" height="40px" /> 
+                            <a href="https://hungdeptraino1.herokuapp.com/profile/${i.user_id}">
+                                <img src="https://hungdeptraino1.herokuapp.com/${i.avatarLink}" alt="" class="avatar" width="40px" height="40px" />
                             </a> 
                             <div class="modify"> 
-                                <strong><a class="modifiedby" href="http://localhost:8081/profile/${i.user_id}">${i.fullName}</a></strong>
+                                <strong><a class="modifiedby" href="https://hungdeptraino1.herokuapp.com/profile/${i.user_id}">${i.fullName}</a></strong>
                                 <p class="modifieddate">${date}</p>
                             </div> 
                         </div> 
@@ -52,7 +52,7 @@ function getQuestions(url, page, key) {
                         var idQuestion = deleteQuestionBtn.getAttribute('idq')
                         if (confirm('Are you sure you want delete this question?')) {
                             $.ajax({
-                                url: 'http://localhost:8081/api/question/' + idQuestion,
+                                url: 'https://hungdeptraino1.herokuapp.com/api/question/' + idQuestion,
                                 type: 'delete',
                                 success: function(result) {
                                     if (result == true) {
