@@ -20,7 +20,7 @@
                         <strong>NHÓM 21</strong>
                     </a>
                     <a href="/"><i class="ti-home"></i></a>
-                    <a href="http://localhost:8081/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
+                    <a href="https://hungdeptraino1.herokuapp.com/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
                 </div>
                 <div class="nav-right">
                     <div class="form" style="display: none;">
@@ -115,7 +115,7 @@
         const questionId = tmp[tmp['length'] - 1];
 
         // Get UserID:
-        $.get("http://localhost:8081/user", function(result) {
+        $.get("https://hungdeptraino1.herokuapp.com/user", function(result) {
             const userId1 = result.id
             const userRole1 = result.role
 
@@ -128,7 +128,7 @@
                     event.stopPropagation()
                     if (confirm('Are you sure you want delete this question?')) {
                         $.ajax({
-                            url: 'http://localhost:8081/api/question/' + questionId,
+                            url: 'https://hungdeptraino1.herokuapp.com/api/question/' + questionId,
                             type: 'delete',
                             success: function(result) {
                                 if (result == true) {
@@ -161,7 +161,7 @@
                         if (confirm('Are you sure you want delete this answer?')) {
                             var ida = xoa.getAttribute('ida')
                             $.ajax({
-                                url: 'http://localhost:8081/api/answer/' + ida,
+                                url: 'https://hungdeptraino1.herokuapp.com/api/answer/' + ida,
                                 type: 'delete',
                                 success: function(result) {
                                     if (result == true) {
@@ -186,7 +186,7 @@
                         if (confirm('Are you sure you want delete this reply?')) {
                             var idr = xoa.getAttribute('idr')
                             $.ajax({
-                                url: 'http://localhost:8081/api/reply/' + idr,
+                                url: 'https://hungdeptraino1.herokuapp.com/api/reply/' + idr,
                                 type: 'delete',
                                 success: function(result) {
                                     if (result == true) {
@@ -221,7 +221,7 @@
         const textArea = document.querySelector('.answerArea')
 
         function totalLike(like, answerId) {
-            $.get('http://localhost:8081/api/answer/like/' + answerId, function(result) {
+            $.get('https://hungdeptraino1.herokuapp.com/api/answer/like/' + answerId, function(result) {
                 like.innerHTML = result + ' Like'
             })
         }
@@ -250,7 +250,7 @@
 
                 totalLike(like, answerId)
 
-                $.get('http://localhost:8081/api/like/' + answerId, function(result) {
+                $.get('https://hungdeptraino1.herokuapp.com/api/like/' + answerId, function(result) {
                     if (result == true)
                         like.style = 'color:blue;'
                     else
@@ -258,7 +258,7 @@
                 })
 
                 like.addEventListener('click', function() {
-                    $.post('http://localhost:8081/api/like/' + answerId, function(result) {
+                    $.post('https://hungdeptraino1.herokuapp.com/api/like/' + answerId, function(result) {
                         if (result == true)
                             like.style = 'color:blue;'
                         else
@@ -275,7 +275,7 @@
         // Post comment API 
         function postAnswer(data) {
             $.ajax({
-                url: 'http://localhost:8081/api/answer',
+                url: 'https://hungdeptraino1.herokuapp.com/api/answer',
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -286,12 +286,12 @@
                     var res = `
                         <div class="answer">
                             <div class="user">
-                                <a href="http://localhost:8081/profile/${i.userId}"> 
-                                    <img src="http://localhost:8081/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
+                                <a href="https://hungdeptraino1.herokuapp.com/profile/${i.userId}"> 
+                                    <img src="https://hungdeptraino1.herokuapp.com/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
                                 </a>
                                 <div class="container-answer" ida="${i.id}">
                                     <div class="modify">
-                                        <strong><a class="modifiedby" href="http://localhost:8081/profile/${i.userId}">${i.fullName}</a></strong>
+                                        <strong><a class="modifiedby" href="https://hungdeptraino1.herokuapp.com/profile/${i.userId}">${i.fullName}</a></strong>
                                         <p class="modifieddate">${date}</p>
                                         <div>
                                             <div class="xoa" ida="${i.id}">Xoá</div>
@@ -323,7 +323,7 @@
 
         function postReply(data, listRepliesContainer) {
             $.ajax({
-                url: 'http://localhost:8081/api/reply',
+                url: 'https://hungdeptraino1.herokuapp.com/api/reply',
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -334,12 +334,12 @@
                     var replyTemp = `
                     <div class="reply">
                         <div class="user">
-                            <a href="http://localhost:8081/profile/${rep.userId}"> 
-                                <img src="http://localhost:8081/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
+                            <a href="https://hungdeptraino1.herokuapp.com/profile/${rep.userId}"> 
+                                <img src="https://hungdeptraino1.herokuapp.com/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
                             </a>
                             <div class="container-answer" ida="${rep.answerId}">
                                 <div class="modify">
-                                    <strong><a class="modifiedby" href="http://localhost:8081/profile/${rep.userId}">${rep.fullName}</a></strong>
+                                    <strong><a class="modifiedby" href="https://hungdeptraino1.herokuapp.com/profile/${rep.userId}">${rep.fullName}</a></strong>
                                     <p class="modifieddate ">${dateRep}</p>
                                     <div>
                                         <div class="xoa" idr="${rep.id}">Xoá</div>
@@ -452,7 +452,7 @@
 
         $(document).ready(function() {
             // Chưa có POST Answer
-            $.get("http://localhost:8081/user", function(thisUser) {
+            $.get("https://hungdeptraino1.herokuapp.com/user", function(thisUser) {
                 const userId = thisUser.id
                 const userRole = thisUser.role
 
@@ -461,7 +461,7 @@
 
                     //Call API
                     $.ajax({
-                        url: 'http://localhost:8081/api/answer/' + questionId,
+                        url: 'https://hungdeptraino1.herokuapp.com/api/answer/' + questionId,
                         type: 'get',
                         dataType: 'json',
                         success: function(result) {
@@ -476,12 +476,12 @@
                                     var replyTemp = `
                                 <div class="reply">
                                     <div class="user">
-                                        <a href="http://localhost:8081/profile/${rep.userId}"> 
-                                            <img src="http://localhost:8081/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
+                                        <a href="https://hungdeptraino1.herokuapp.com/profile/${rep.userId}"> 
+                                            <img src="https://hungdeptraino1.herokuapp.com/${rep.avatarLink}" alt=" " class="avatar " width="24px " height="24px " />
                                         </a>
                                         <div class="container-answer" ida="${i.id}">
                                             <div class="modify" >
-                                                <strong><a class="modifiedby" href="http://localhost:8081/profile/${rep.userId}">${rep.fullName}</a></strong>
+                                                <strong><a class="modifiedby" href="https://hungdeptraino1.herokuapp.com/profile/${rep.userId}">${rep.fullName}</a></strong>
                                                 <p class="modifieddate ">${dateRep}</p> 
                                 `
                                     if (userId == rep.userId || userRole == 'ROLE_ADMIN') {
@@ -509,12 +509,12 @@
                                 var res = `
                             <div class="answer">
                                 <div class="user">
-                                    <a href="http://localhost:8081/profile/${i.userId}"> 
-                                        <img src="http://localhost:8081/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
+                                    <a href="https://hungdeptraino1.herokuapp.com/profile/${i.userId}"> 
+                                        <img src="https://hungdeptraino1.herokuapp.com/${i.avatarLink}" alt="" class="avatar" width="36px" height="36x" />
                                     </a>
                                     <div class="container-answer" ida="${i.id}">
                                         <div class="modify">
-                                            <strong><a class="modifiedby" href="http://localhost:8081/profile/${i.userId}">${i.fullName}</a></strong>
+                                            <strong><a class="modifiedby" href="https://hungdeptraino1.herokuapp.com/profile/${i.userId}">${i.fullName}</a></strong>
                                             <p class="modifieddate">${date}</p>
                                             `
                                 if (userId == i.userId || userRole == 'ROLE_ADMIN') {

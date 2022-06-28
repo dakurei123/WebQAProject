@@ -137,7 +137,7 @@
                     data['name'] = name
 
                     $.ajax({
-                        url: 'http://localhost:8081/admin/api/category',
+                        url: 'https://hungdeptraino1.herokuapp.com/admin/api/category',
                         type: 'post',
                         contentType: 'application/json',
                         data: JSON.stringify(data),
@@ -162,7 +162,7 @@
                         <button class="edit">Add</button> </br>
                     </div>
                     `
-                    $.get("http://localhost:8081/admin/api/category", function(categories) {
+                    $.get("https://hungdeptraino1.herokuapp.com/admin/api/category", function(categories) {
                         for (var category of categories) {
                             res += ` 
                         <div class = "item">
@@ -193,7 +193,7 @@
                 result.innerHTML = ""
 
                 function loadUsers() {
-                    $.get("http://localhost:8081/admin/api/users", function(users) {
+                    $.get("https://hungdeptraino1.herokuapp.com/admin/api/users", function(users) {
                         var res = `
                             <table>
                                 <tr>
@@ -217,7 +217,7 @@
                             }
                             res += ` 
                                     <td class="id">${user.id}</td>
-                                    <td><img src="http://localhost:8081/${user.avatar}" alt="" class="avatar" width="40px" height="40px" /></td>
+                                    <td><img src="https://hungdeptraino1.herokuapp.com/${user.avatar}" alt="" class="avatar" width="40px" height="40px" /></td>
                                     <td>${user.username}</td>
                                     <td>${user.fullName}</td>
                                     <td class = "user-role">${user.role}</td>
@@ -254,7 +254,7 @@
                                 var main = ban.closest('tr')
                                 var id = main.querySelector('.id').innerHTML
                                 $.ajax({
-                                    url: 'http://localhost:8081/admin/api/user/lock/' + id,
+                                    url: 'https://hungdeptraino1.herokuapp.com/admin/api/user/lock/' + id,
                                     type: 'put',
                                     success: function(result) {
                                         if (result == 1) {
@@ -282,7 +282,7 @@
                                 var main = role.closest('tr')
                                 var id = main.querySelector('.id').innerHTML
                                 $.ajax({
-                                    url: 'http://localhost:8081/admin/api/user/role/' + id,
+                                    url: 'https://hungdeptraino1.herokuapp.com/admin/api/user/role/' + id,
                                     type: 'put',
                                     success: function(result) {
                                         main.querySelector('.user-role').innerHTML = result

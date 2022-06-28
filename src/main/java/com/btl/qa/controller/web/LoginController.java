@@ -12,7 +12,7 @@ public class LoginController {
 	@GetMapping("/login")
 	public String login() {
 		if (auth.isLogged()) {
-	        return "redirect:http://localhost:8081/";
+	        return "redirect:https://hungdeptraino1.herokuapp.com/";
 	    }
 		return "login";
 	}

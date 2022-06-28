@@ -10,14 +10,14 @@
 </head>
 
 <body>
-	<input type="hidden" th:value = "${code}" id = "code"/>
-	<input type="hidden" th:value = "${message}" id = "message"/>
+    <input type="hidden" th:value="${code}" id="code" />
+    <input type="hidden" th:value="${message}" id="message" />
     <script type="text/javascript">
         //<![CDATA[
-        var code  = document.querySelector('#code').value
+        var code = document.querySelector('#code').value
         var message = document.querySelector('#message').value
         alert("Error: " + code + ": " + message);
-        window.location="/";
+        window.location = "/";
         //]]>
     </script>
 </body>

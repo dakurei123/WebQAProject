@@ -21,7 +21,7 @@
                         <strong>NHÓM 21</strong>
                     </a>
                     <a href="/"><i class="ti-home"></i></a>
-                    <a href="http://localhost:8081/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
+                    <a href="https://hungdeptraino1.herokuapp.com/admin" sec:authorize="hasRole('ADMIN')">GO TO ADMIN PAGE</a>
                 </div>
                 <div class="nav-right">
                     <div class="form">
@@ -112,14 +112,14 @@
         $('document').ready(function() {
             const tmp = location.href.split("\/");
             const userId = tmp[tmp['length'] - 1];
-            $.get("http://localhost:8081/api/user/info/" + userId, function(result) {
+            $.get("https://hungdeptraino1.herokuapp.com/api/user/info/" + userId, function(result) {
                 document.querySelector('#nQs').innerHTML = result.numberQuestions
                 document.querySelector('#nAs').innerHTML = result.numberAnswers
                 document.querySelector('#nLs').innerHTML = result.like
             });
 
             //Get Question By User
-            const urlGetQuestionByUser = 'http://localhost:8081/api/user/question/' + userId
+            const urlGetQuestionByUser = 'https://hungdeptraino1.herokuapp.com/api/user/question/' + userId
             getQuestions(urlGetQuestionByUser)
 
             //Get Question By User And Category
@@ -127,7 +127,7 @@
             for (const getQuestionsByCategory of getQuestionsByCategories) {
                 getQuestionsByCategory.addEventListener('click', function() {
                     var categoryId = getQuestionsByCategory.getAttribute('value');
-                    getQuestions('http://localhost:8081/api/user/question/category?userId=' + userId + '&categoryId=' + categoryId)
+                    getQuestions('https://hungdeptraino1.herokuapp.com/api/user/question/category?userId=' + userId + '&categoryId=' + categoryId)
                 })
             }
 
@@ -136,7 +136,7 @@
 
             search.addEventListener('keypress', function(event) {
                 if (event.which == 13) {
-                    getQuestions('http://localhost:8081/api/user/question/search/?userId=' + userId + '&key=' + search.value)
+                    getQuestions('https://hungdeptraino1.herokuapp.com/api/user/question/search/?userId=' + userId + '&key=' + search.value)
 
                     event.preventDefault();
                 }
@@ -144,7 +144,7 @@
 
             const tiSearch = document.querySelector('.search-btn')
             tiSearch.addEventListener('click', function searchQuestion() {
-                getQuestions('http://localhost:8081/api/user/question/search/?userId=' + userId + '&key=' + search.value)
+                getQuestions('https://hungdeptraino1.herokuapp.com/api/user/question/search/?userId=' + userId + '&key=' + search.value)
                 event.preventDefault();
             })
 

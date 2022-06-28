@@ -27,7 +27,7 @@ public class QuestionController {
 	ICategoryService categoryService;
 	
 	RestTemplate restTemplate = new RestTemplate();
-	String url = "http://localhost:8081/api/question/";
+	String url = "https://hungdeptraino1.herokuapp.com/api/question/";
 	
 	@GetMapping("question/{raw_id}")
 	@PreAuthorize("isAuthenticated()")
