@@ -1,5 +1,7 @@
 # 🔥Nhóm 21🔥  WebQAProject 🔥Nhóm 21🔥
 
+Demo: https://hungdeptraino1.herokuapp.com/
+
 Nguyễn Duy Hùng (B19DCCN297):
 - Frontend (html + css + js + jquery (ajax để call API)) <br>
 - Thiết kế database (Sử dụng MySQL) <br>
